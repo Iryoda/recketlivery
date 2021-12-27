@@ -1,0 +1,3 @@
+{
+  "skip_files": ["test/support", "lib/recketlivery_web/channels/user_socket.ex"]
+}

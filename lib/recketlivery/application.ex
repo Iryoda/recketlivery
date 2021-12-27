@@ -1,0 +1,39 @@
+defmodule Recketlivery.Application do
+  # See https://hexdocs.pm/elixir/Application.html
+  # for more information on OTP Applications
+  @moduledoc false
+
+  use Application
+
+  @impl true
+  def start(_type, _args) do
+    children = [
+      # Start the Ecto repository
+      Recketlivery.Repo,
+      # Start the Telemetry supervisor
+      RecketliveryWeb.Telemetry,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: Recketlivery.PubSub},
+      # Start the Endpoint (http/https)
+      RecketliveryWeb.Endpoint,
+      # Start a worker by calling: Recketlivery.Worker.start_link(arg)
+      # {Recketlivery.Worker, arg}
+
+      Recketlivery.Orders.ReportRunner
+    ]
+
+    # See https://hexdocs.pm/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: Recketlivery.Supervisor]
+
+    Supervisor.start_link(children, opts)
+  end
+
+  # Tell Phoenix to update the endpoint configuration
+  # whenever the application is updated.
+  @impl true
+  def config_change(changed, _new, removed) do
+    RecketliveryWeb.Endpoint.config_change(changed, removed)
+    :ok
+  end
+end
